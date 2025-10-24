@@ -1,141 +1,135 @@
--- GUI de velocidade + cores + fechar
--- Feito por ChatGPT 🚀
+-- Anti-Lag Hub - Script Local para Roblox
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-if game.CoreGui:FindFirstChild("SpeedGui") then
-    game.CoreGui.SpeedGui:Destroy()
-end
+-- Criar ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AntiLagHub"
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.Parent = playerGui
 
-local gui = Instance.new("ScreenGui")
-gui.Name = "SpeedGui"
-gui.Parent = game.CoreGui
+-- Frame Principal (Móvel)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 300, 0, 200)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
 
--- Frame principal
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 270, 0, 200)
-frame.Position = UDim2.new(0.5, -135, 0.5, -100)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-frame.Parent = gui
+-- Adicionar cantos arredondados
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
 
--- Título
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -30, 0, 30)
-title.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-title.Text = "🚀 Painel de Velocidade"
-title.TextColor3 = Color3.fromRGB(255,255,255)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 16
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.Parent = frame
+-- Barra de Título
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
 
--- Botão X (fechar)
-local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 30, 0, 30)
-closeBtn.Position = UDim2.new(1, -30, 0, 0)
-closeBtn.Text = "X"
-closeBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 16
-closeBtn.Parent = frame
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 10)
+titleCorner.Parent = titleBar
 
-closeBtn.MouseButton1Click:Connect(function()
-    gui:Destroy()
+-- Texto do Título
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "Title"
+titleLabel.Size = UDim2.new(1, -50, 1, 0)
+titleLabel.Position = UDim2.new(0, 10, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Anti-Lag Hub"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 18
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = titleBar
+
+-- Botão Fechar
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+closeButton.BorderSizePixel = 0
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 16
+closeButton.Font = Enum.Font.GothamBold
+closeButton.Parent = titleBar
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 6)
+closeCorner.Parent = closeButton
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
 end)
 
--- Caixa de texto
-local box = Instance.new("TextBox")
-box.Size = UDim2.new(0.8, 0, 0, 40)
-box.Position = UDim2.new(0.1, 0, 0.25, 0)
-box.PlaceholderText = "Velocidade (1-9999)"
-box.Text = ""
-box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-box.TextColor3 = Color3.fromRGB(255,255,255)
-box.Font = Enum.Font.Gotham
-box.TextSize = 18
-box.Parent = frame
+-- Container de Conteúdo
+local contentFrame = Instance.new("Frame")
+contentFrame.Name = "Content"
+contentFrame.Size = UDim2.new(1, -20, 1, -60)
+contentFrame.Position = UDim2.new(0, 10, 0, 50)
+contentFrame.BackgroundTransparency = 1
+contentFrame.Parent = mainFrame
 
--- Botão aplicar
-local applyBtn = Instance.new("TextButton")
-applyBtn.Size = UDim2.new(0.8, 0, 0, 35)
-applyBtn.Position = UDim2.new(0.1, 0, 0.52, 0)
-applyBtn.Text = "Aplicar Velocidade"
-applyBtn.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-applyBtn.TextColor3 = Color3.fromRGB(255,255,255)
-applyBtn.Font = Enum.Font.GothamBold
-applyBtn.TextSize = 18
-applyBtn.Parent = frame
+-- Botão Anti-Lag
+local antiButton = Instance.new("TextButton")
+antiButton.Name = "AntiButton"
+antiButton.Size = UDim2.new(1, 0, 0, 50)
+antiButton.Position = UDim2.new(0, 0, 0, 20)
+antiButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+antiButton.BorderSizePixel = 0
+antiButton.Text = "Anti"
+antiButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+antiButton.TextSize = 20
+antiButton.Font = Enum.Font.GothamBold
+antiButton.Parent = contentFrame
 
--- Menu de cores
-local colorLabel = Instance.new("TextLabel")
-colorLabel.Size = UDim2.new(1, 0, 0, 20)
-colorLabel.Position = UDim2.new(0, 0, 0.73, 0)
-colorLabel.BackgroundTransparency = 1
-colorLabel.Text = "🎨 Mudar Cor:"
-colorLabel.TextColor3 = Color3.fromRGB(255,255,255)
-colorLabel.Font = Enum.Font.GothamBold
-colorLabel.TextSize = 14
-colorLabel.Parent = frame
+local antiCorner = Instance.new("UICorner")
+antiCorner.CornerRadius = UDim.new(0, 8)
+antiCorner.Parent = antiButton
 
-local colors = {
-    Vermelho = Color3.fromRGB(255, 70, 70),
-    Branco = Color3.fromRGB(255, 255, 255),
-    Preto = Color3.fromRGB(30, 30, 30)
-}
-
-local dropdown = Instance.new("TextButton")
-dropdown.Size = UDim2.new(0.8, 0, 0, 30)
-dropdown.Position = UDim2.new(0.1, 0, 0.83, 0)
-dropdown.Text = "Selecionar Cor"
-dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-dropdown.TextColor3 = Color3.fromRGB(255,255,255)
-dropdown.Font = Enum.Font.GothamBold
-dropdown.TextSize = 16
-dropdown.Parent = frame
-
-local menu = Instance.new("Frame")
-menu.Size = UDim2.new(0.8, 0, 0, 90)
-menu.Position = UDim2.new(0.1, 0, 1, 0)
-menu.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-menu.Visible = false
-menu.Parent = dropdown
-
-local y = 0
-for nome, cor in pairs(colors) do
-    local opt = Instance.new("TextButton")
-    opt.Size = UDim2.new(1, 0, 0, 30)
-    opt.Position = UDim2.new(0, 0, 0, y)
-    opt.Text = nome
-    opt.BackgroundColor3 = cor
-    opt.TextColor3 = Color3.fromRGB(255,255,255)
-    opt.Font = Enum.Font.GothamBold
-    opt.TextSize = 14
-    opt.Parent = menu
-    y += 30
-
-    opt.MouseButton1Click:Connect(function()
-        frame.BackgroundColor3 = cor
-        menu.Visible = false
-    end)
-end
-
-dropdown.MouseButton1Click:Connect(function()
-    menu.Visible = not menu.Visible
+-- Efeito hover no botão
+antiButton.MouseEnter:Connect(function()
+    antiButton.BackgroundColor3 = Color3.fromRGB(70, 170, 255)
 end)
 
--- Função principal de velocidade
-applyBtn.MouseButton1Click:Connect(function()
-    local speed = tonumber(box.Text)
-    if speed and speed >= 1 and speed <= 9999 then
-        local player = game.Players.LocalPlayer
-        local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = speed
-            applyBtn.Text = "Velocidade: " .. speed
-        end
-    else
-        applyBtn.Text = "⚠️ Valor inválido!"
-    end
+antiButton.MouseLeave:Connect(function()
+    antiButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
 end)
+
+-- Função para reiniciar o jogo
+antiButton.MouseButton1Click:Connect(function()
+    antiButton.Text = "Reiniciando..."
+    antiButton.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+    wait(0.5)
+    
+    -- Teleporta o jogador de volta para o mesmo jogo
+    local placeId = game.PlaceId
+    TeleportService:Teleport(placeId, player)
+end)
+
+-- Texto informativo
+local infoLabel = Instance.new("TextLabel")
+infoLabel.Name = "Info"
+infoLabel.Size = UDim2.new(1, 0, 0, 40)
+infoLabel.Position = UDim2.new(0, 0, 1, -50)
+infoLabel.BackgroundTransparency = 1
+infoLabel.Text = "Clique em 'Anti' para reiniciar o jogo"
+infoLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+infoLabel.TextSize = 12
+infoLabel.Font = Enum.Font.Gotham
+infoLabel.TextWrapped = true
+infoLabel.Parent = contentFrame
+
+print("Anti-Lag Hub carregado com sucesso!")
