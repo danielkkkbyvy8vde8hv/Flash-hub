@@ -1,0 +1,170 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "99 Nights in the Forest",
+   LoadingTitle = "Carregando Script",
+   LoadingSubtitle = "by Assistant",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "99NightsConfig"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+   KeySystem = false,
+   KeySettings = {
+      Title = "Key System",
+      Subtitle = "Key System",
+      Note = "No key needed",
+      FileName = "Key",
+      SaveKey = false,
+      GrabKeyFromSite = false,
+      Key = {""}
+   }
+})
+
+-- Aba Teleportar
+local TeleportTab = Window:CreateTab("Teleportar", 4483362458)
+local TeleportSection = TeleportTab:CreateSection("Teleportes")
+
+local TeleportButton = TeleportTab:CreateButton({
+   Name = "Teleportar para Fogueira",
+   Callback = function()
+      local player = game.Players.LocalPlayer
+      local character = player.Character or player.CharacterAdded:Wait()
+      local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+      
+      -- Procura pela fogueira no workspace
+      local campfire = workspace:FindFirstChild("Campfire") or workspace:FindFirstChild("Fogueira")
+      
+      if campfire then
+         humanoidRootPart.CFrame = campfire.CFrame + Vector3.new(0, 5, 0)
+         Rayfield:Notify({
+            Title = "Teleporte",
+            Content = "Teleportado para a fogueira!",
+            Duration = 3,
+            Image = 4483362458,
+         })
+      else
+         Rayfield:Notify({
+            Title = "Erro",
+            Content = "Fogueira não encontrada!",
+            Duration = 3,
+            Image = 4483362458,
+         })
+      end
+   end,
+})
+
+-- Aba Velocidade
+local VelocidadeTab = Window:CreateTab("Velocidade", 4483362458)
+local VelocidadeSection = VelocidadeTab:CreateSection("Modificar Velocidade")
+
+local VelocidadeSlider = VelocidadeTab:CreateSlider({
+   Name = "Velocidade de Movimento",
+   Range = {16, 200},
+   Increment = 1,
+   Suffix = " Speed",
+   CurrentValue = 16,
+   Flag = "VelocidadeSlider",
+   Callback = function(Value)
+      local player = game.Players.LocalPlayer
+      local character = player.Character or player.CharacterAdded:Wait()
+      local humanoid = character:WaitForChild("Humanoid")
+      humanoid.WalkSpeed = Value
+   end,
+})
+
+-- Aba Settings
+local SettingsTab = Window:CreateTab("Settings", 4483362458)
+local SettingsSection = SettingsTab:CreateSection("Configurações")
+
+-- ESP
+local ESPToggle = SettingsTab:CreateToggle({
+   Name = "ESP Humanoides",
+   CurrentValue = false,
+   Flag = "ESPToggle",
+   Callback = function(Value)
+      if Value then
+         -- Ativar ESP
+         _G.ESPEnabled = true
+         for _, player in pairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer and player.Character then
+               local highlight = Instance.new("Highlight")
+               highlight.Name = "ESP_Highlight"
+               highlight.FillColor = Color3.fromRGB(255, 0, 0)
+               highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+               highlight.Parent = player.Character
+            end
+         end
+         
+         -- ESP para novos jogadores
+         game.Players.PlayerAdded:Connect(function(player)
+            player.CharacterAdded:Connect(function(character)
+               if _G.ESPEnabled then
+                  wait(1)
+                  local highlight = Instance.new("Highlight")
+                  highlight.Name = "ESP_Highlight"
+                  highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                  highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                  highlight.Parent = character
+               end
+            end)
+         end)
+      else
+         -- Desativar ESP
+         _G.ESPEnabled = false
+         for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Character then
+               local highlight = player.Character:FindFirstChild("ESP_Highlight")
+               if highlight then
+                  highlight:Destroy()
+               end
+            end
+         end
+      end
+   end,
+})
+
+-- NoClip
+local NoClipToggle = SettingsTab:CreateToggle({
+   Name = "NoClip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+      _G.NoClip = Value
+      if Value then
+         game:GetService("RunService").Stepped:Connect(function()
+            if _G.NoClip then
+               local player = game.Players.LocalPlayer
+               if player.Character then
+                  for _, part in pairs(player.Character:GetDescendants()) do
+                     if part:IsA("BasePart") then
+                        part.CanCollide = false
+                     end
+                  end
+               end
+            end
+         end)
+      end
+   end,
+})
+
+-- Fly
+local FlyButton = SettingsTab:CreateButton({
+   Name = "Ativar Fly",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/FallenTDS/Fly-GUI/refs/heads/main/Fly%20GUI"))()
+      Rayfield:Notify({
+         Title = "Fly",
+         Content = "Script Fly carregado!",
+         Duration = 3,
+         Image = 4483362458,
+      })
+   end,
+})
+
+Rayfield:LoadConfiguration()
