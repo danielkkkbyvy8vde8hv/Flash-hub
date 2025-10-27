@@ -3,7 +3,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "99 Nights in the Forest",
    LoadingTitle = "Carregando Script",
-   LoadingSubtitle = "by Assistant",
+   LoadingSubtitle = "by daniel",
    ConfigurationSaving = {
       Enabled = true,
       FolderName = nil,
@@ -14,15 +14,15 @@ local Window = Rayfield:CreateWindow({
       Invite = "noinvitelink",
       RememberJoins = true
    },
-   KeySystem = false,
+   KeySystem = true,
    KeySettings = {
-      Title = "Key System",
-      Subtitle = "Key System",
-      Note = "No key needed",
+      Title = "key 15",
+      Subtitle = "Key 15",
+      Note = "a key e infinite",
       FileName = "Key",
-      SaveKey = false,
+      SaveKey = true,
       GrabKeyFromSite = false,
-      Key = {""}
+      Key = {"15"}
    }
 })
 
@@ -279,6 +279,148 @@ local NoClipToggle = SettingsTab:CreateToggle({
          if _G.NoClipConnection then
             _G.NoClipConnection:Disconnect()
          end
+      end
+   end,
+})
+
+-- Mostrar Vida da Fogueira
+local FogueiraESPToggle = SettingsTab:CreateToggle({
+   Name = "Mostrar Vida da Fogueira",
+   CurrentValue = false,
+   Flag = "FogueiraESPToggle",
+   Callback = function(Value)
+      if Value then
+         _G.FogueiraESPEnabled = true
+         
+         -- Função para criar ESP da fogueira
+         local function createFogueiraESP(campfire, name)
+            if campfire:FindFirstChild("Fogueira_ESP_Billboard") then return end
+            
+            -- Highlight
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "Fogueira_ESP_Highlight"
+            highlight.FillColor = Color3.fromRGB(255, 165, 0)
+            highlight.OutlineColor = Color3.fromRGB(255, 255, 0)
+            highlight.FillTransparency = 0.3
+            highlight.OutlineTransparency = 0
+            
+            if campfire:IsA("Model") then
+               highlight.Parent = campfire
+            else
+               local model = Instance.new("Model")
+               model.Parent = campfire.Parent
+               campfire.Parent = model
+               highlight.Parent = model
+            end
+            
+            -- Procura pelo Humanoid da fogueira
+            local humanoid = campfire:FindFirstChildOfClass("Humanoid")
+            if not humanoid and campfire:IsA("Model") then
+               humanoid = campfire:FindFirstChildOfClass("Humanoid", true)
+            end
+            
+            if humanoid then
+               local mainPart = campfire:IsA("Model") and (campfire:FindFirstChild("HumanoidRootPart") or campfire.PrimaryPart or campfire:FindFirstChildWhichIsA("BasePart")) or campfire
+               
+               if mainPart then
+                  local billboard = Instance.new("BillboardGui")
+                  billboard.Name = "Fogueira_ESP_Billboard"
+                  billboard.Adornee = mainPart
+                  billboard.Size = UDim2.new(0, 250, 0, 80)
+                  billboard.StudsOffset = Vector3.new(0, 5, 0)
+                  billboard.AlwaysOnTop = true
+                  billboard.Parent = mainPart
+                  
+                  local nameLabel = Instance.new("TextLabel")
+                  nameLabel.Name = "NameLabel"
+                  nameLabel.Size = UDim2.new(1, 0, 0.4, 0)
+                  nameLabel.BackgroundTransparency = 1
+                  nameLabel.Text = "🔥 " .. name .. " 🔥"
+                  nameLabel.TextColor3 = Color3.fromRGB(255, 165, 0)
+                  nameLabel.TextScaled = true
+                  nameLabel.Font = Enum.Font.SourceSansBold
+                  nameLabel.TextStrokeTransparency = 0.5
+                  nameLabel.Parent = billboard
+                  
+                  local healthLabel = Instance.new("TextLabel")
+                  healthLabel.Name = "HealthLabel"
+                  healthLabel.Size = UDim2.new(1, 0, 0.6, 0)
+                  healthLabel.Position = UDim2.new(0, 0, 0.4, 0)
+                  healthLabel.BackgroundTransparency = 1
+                  healthLabel.Text = "VIDA: " .. math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth)
+                  healthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                  healthLabel.TextScaled = true
+                  healthLabel.Font = Enum.Font.SourceSansBold
+                  healthLabel.TextStrokeTransparency = 0.5
+                  healthLabel.Parent = billboard
+                  
+                  -- Atualizar vida em tempo real
+                  humanoid.HealthChanged:Connect(function(health)
+                     if _G.FogueiraESPEnabled and healthLabel then
+                        healthLabel.Text = "VIDA: " .. math.floor(health) .. "/" .. math.floor(humanoid.MaxHealth)
+                        local healthPercent = health / humanoid.MaxHealth
+                        healthLabel.TextColor3 = Color3.fromRGB(
+                           255 * (1 - healthPercent),
+                           255 * healthPercent,
+                           0
+                        )
+                     end
+                  end)
+               end
+            else
+               Rayfield:Notify({
+                  Title = "Aviso",
+                  Content = "Fogueira encontrada mas sem Humanoid!",
+                  Duration = 3,
+                  Image = 4483362458,
+               })
+            end
+         end
+         
+         -- Procura pela fogueira
+         local found = false
+         for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:lower():find("campfire") or 
+               obj.Name:lower():find("fogueira") or 
+               obj.Name:lower():find("fire") or
+               obj.Name:lower():find("bonfire") then
+               if obj:IsA("BasePart") or obj:IsA("Model") then
+                  createFogueiraESP(obj, obj.Name)
+                  found = true
+               end
+            end
+         end
+         
+         if found then
+            Rayfield:Notify({
+               Title = "ESP Fogueira",
+               Content = "ESP da fogueira ativado!",
+               Duration = 3,
+               Image = 4483362458,
+            })
+         else
+            Rayfield:Notify({
+               Title = "Erro",
+               Content = "Fogueira não encontrada!",
+               Duration = 3,
+               Image = 4483362458,
+            })
+         end
+      else
+         -- Desativar ESP da fogueira
+         _G.FogueiraESPEnabled = false
+         for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name == "Fogueira_ESP_Highlight" or obj.Name == "Fogueira_ESP_Billboard" then
+               obj:Destroy()
+            end
+         end
+         
+         Rayfield:Notify({
+            Title = "ESP Fogueira",
+            Content = "ESP da fogueira desativado!",
+            Duration = 3,
+            Image = 4483362458,
+         })
       end
    end,
 })
