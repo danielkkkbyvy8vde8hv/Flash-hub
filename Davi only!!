@@ -182,10 +182,36 @@ ESPButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Botão fechar
+-- Botão minimizar (logo)
+local LogoButton = Instance.new("ImageButton")
+LogoButton.Name = "LogoButton"
+LogoButton.Size = UDim2.new(0, 80, 0, 80)
+LogoButton.Position = UDim2.new(0, 10, 1, -90)
+LogoButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+LogoButton.BorderSizePixel = 0
+LogoButton.Image = "rbxassetid://118243666553594" -- Substitua pela ID da sua imagem
+LogoButton.ScaleType = Enum.ScaleType.Fit
+LogoButton.Visible = false
+LogoButton.Parent = ScreenGui
+
+local LogoCorner = Instance.new("UICorner")
+LogoCorner.CornerRadius = UDim.new(0, 40)
+LogoCorner.Parent = LogoButton
+
+-- Função para minimizar/maximizar
+local function ToggleGUI()
+    MainFrame.Visible = not MainFrame.Visible
+    LogoButton.Visible = not LogoButton.Visible
+end
+
+-- Botão X agora minimiza
 CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-    DisableESP()
+    ToggleGUI()
+end)
+
+-- Clicar na logo abre a GUI novamente
+LogoButton.MouseButton1Click:Connect(function()
+    ToggleGUI()
 end)
 
 -- Atualizar ESP quando novos jogadores entrarem
