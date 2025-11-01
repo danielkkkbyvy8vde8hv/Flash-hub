@@ -1,9 +1,23 @@
--- Kiti-Hub Privado for Davi
+-- Kiti-Hub Privado for Davi v2.0
 -- Script GUI Local para Roblox
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+-- Configurações salvas
+local Settings = {
+    Speed = 16,
+    InfinityJump = false,
+    ESPEnabled = false,
+    ESPDistance = true,
+    ESPHealth = true,
+    ESPTracers = false,
+    AntiAFK = false,
+    Theme = "Dark"
+}
 
 -- Criar a GUI principal
 local ScreenGui = Instance.new("ScreenGui")
@@ -11,82 +25,79 @@ ScreenGui.Name = "KitiHubPrivado"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
+-- Criar notificação
+local function CreateNotification(text, duration)
+    local notif = Instance.new("Frame")
+    notif.Size = UDim2.new(0, 300, 0, 60)
+    notif.Position = UDim2.new(1, -320, 0, 20)
+    notif.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    notif.BorderSizePixel = 0
+    notif.Parent = ScreenGui
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = notif
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -20, 1, -20)
+    label.Position = UDim2.new(0, 10, 0, 10)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 16
+    label.Font = Enum.Font.Gotham
+    label.TextWrapped = true
+    label.Parent = notif
+    
+    notif:TweenPosition(UDim2.new(1, -320, 0, 20), "Out", "Quad", 0.5, true)
+    
+    task.wait(duration or 3)
+    notif:TweenPosition(UDim2.new(1, 20, 0, 20), "In", "Quad", 0.5, true)
+    task.wait(0.5)
+    notif:Destroy()
+end
+
 -- Frame principal
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 350, 0, 250)
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -125)
-MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainFrame.Size = UDim2.new(0, 500, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Parent = ScreenGui
 
--- Adicionar bordas arredondadas
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = MainFrame
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
 
 -- Título
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 Title.BorderSizePixel = 0
-Title.Text = "Kiti-Hub Privado for Davi"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 18
+Title.Text = "🎀 Kiti-Hub Privado for Davi v2.0"
+Title.TextColor3 = Color3.fromRGB(255, 100, 150)
+Title.TextSize = 20
 Title.Font = Enum.Font.GothamBold
 Title.Parent = MainFrame
 
 local TitleCorner = Instance.new("UICorner")
-TitleCorner.CornerRadius = UDim.new(0, 10)
+TitleCorner.CornerRadius = UDim.new(0, 12)
 TitleCorner.Parent = Title
 
--- Botão Kitar
-local KitarButton = Instance.new("TextButton")
-KitarButton.Name = "KitarButton"
-KitarButton.Size = UDim2.new(0, 300, 0, 50)
-KitarButton.Position = UDim2.new(0.5, -150, 0, 60)
-KitarButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-KitarButton.BorderSizePixel = 0
-KitarButton.Text = "KITAR"
-KitarButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-KitarButton.TextSize = 20
-KitarButton.Font = Enum.Font.GothamBold
-KitarButton.Parent = MainFrame
-
-local KitarCorner = Instance.new("UICorner")
-KitarCorner.CornerRadius = UDim.new(0, 8)
-KitarCorner.Parent = KitarButton
-
--- Botão ESP
-local ESPButton = Instance.new("TextButton")
-ESPButton.Name = "ESPButton"
-ESPButton.Size = UDim2.new(0, 300, 0, 50)
-ESPButton.Position = UDim2.new(0.5, -150, 0, 130)
-ESPButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
-ESPButton.BorderSizePixel = 0
-ESPButton.Text = "ESP: OFF"
-ESPButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ESPButton.TextSize = 20
-ESPButton.Font = Enum.Font.GothamBold
-ESPButton.Parent = MainFrame
-
-local ESPCorner = Instance.new("UICorner")
-ESPCorner.CornerRadius = UDim.new(0, 8)
-ESPCorner.Parent = ESPButton
-
--- Botão Fechar
+-- Botão Fechar/Minimizar
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
-CloseButton.Size = UDim2.new(0, 30, 0, 30)
-CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.Size = UDim2.new(0, 35, 0, 35)
+CloseButton.Position = UDim2.new(1, -42, 0, 7.5)
 CloseButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
 CloseButton.BorderSizePixel = 0
-CloseButton.Text = "X"
+CloseButton.Text = "−"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.TextSize = 18
+CloseButton.TextSize = 22
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.Parent = MainFrame
 
@@ -94,8 +105,332 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
+-- Container de abas
+local TabContainer = Instance.new("Frame")
+TabContainer.Name = "TabContainer"
+TabContainer.Size = UDim2.new(1, -20, 0, 40)
+TabContainer.Position = UDim2.new(0, 10, 0, 60)
+TabContainer.BackgroundTransparency = 1
+TabContainer.Parent = MainFrame
+
+-- Content Frame
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -20, 1, -120)
+ContentFrame.Position = UDim2.new(0, 10, 0, 110)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Parent = MainFrame
+
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0, 10)
+ContentCorner.Parent = ContentFrame
+
+-- Sistema de abas
+local currentTab = nil
+local tabs = {}
+
+local function CreateTab(name, icon)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = name .. "Tab"
+    tabButton.Size = UDim2.new(0, 150, 1, 0)
+    tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabButton.BorderSizePixel = 0
+    tabButton.Text = icon .. " " .. name
+    tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    tabButton.TextSize = 16
+    tabButton.Font = Enum.Font.GothamBold
+    tabButton.Parent = TabContainer
+    
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0, 8)
+    tabCorner.Parent = tabButton
+    
+    local tabContent = Instance.new("ScrollingFrame")
+    tabContent.Name = name .. "Content"
+    tabContent.Size = UDim2.new(1, -10, 1, -10)
+    tabContent.Position = UDim2.new(0, 5, 0, 5)
+    tabContent.BackgroundTransparency = 1
+    tabContent.BorderSizePixel = 0
+    tabContent.ScrollBarThickness = 4
+    tabContent.Visible = false
+    tabContent.Parent = ContentFrame
+    
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 10)
+    layout.Parent = tabContent
+    
+    tabs[name] = {button = tabButton, content = tabContent}
+    
+    tabButton.MouseButton1Click:Connect(function()
+        for _, tab in pairs(tabs) do
+            tab.button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            tab.button.TextColor3 = Color3.fromRGB(200, 200, 200)
+            tab.content.Visible = false
+        end
+        tabButton.BackgroundColor3 = Color3.fromRGB(255, 100, 150)
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tabContent.Visible = true
+        currentTab = name
+    end)
+    
+    return tabContent
+end
+
+-- Criar função de botão genérico
+local function CreateButton(parent, text, color, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -10, 0, 45)
+    button.BackgroundColor3 = color
+    button.BorderSizePixel = 0
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 16
+    button.Font = Enum.Font.GothamBold
+    button.Parent = parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = button
+    
+    -- Animação de hover
+    button.MouseEnter:Connect(function()
+        button:TweenSize(UDim2.new(1, -5, 0, 48), "Out", "Quad", 0.2, true)
+    end)
+    
+    button.MouseLeave:Connect(function()
+        button:TweenSize(UDim2.new(1, -10, 0, 45), "Out", "Quad", 0.2, true)
+    end)
+    
+    button.MouseButton1Click:Connect(callback)
+    
+    return button
+end
+
+-- Criar slider
+local function CreateSlider(parent, text, min, max, default, callback)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -10, 0, 70)
+    container.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    container.BorderSizePixel = 0
+    container.Parent = parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = container
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -20, 0, 25)
+    label.Position = UDim2.new(0, 10, 0, 5)
+    label.BackgroundTransparency = 1
+    label.Text = text .. ": " .. default
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = container
+    
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(1, -20, 0, 25)
+    sliderFrame.Position = UDim2.new(0, 10, 0, 35)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sliderFrame.BorderSizePixel = 0
+    sliderFrame.Parent = container
+    
+    local sliderCorner = Instance.new("UICorner")
+    sliderCorner.CornerRadius = UDim.new(0, 6)
+    sliderCorner.Parent = sliderFrame
+    
+    local sliderFill = Instance.new("Frame")
+    sliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(255, 100, 150)
+    sliderFill.BorderSizePixel = 0
+    sliderFill.Parent = sliderFrame
+    
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = UDim.new(0, 6)
+    fillCorner.Parent = sliderFill
+    
+    local dragging = false
+    
+    sliderFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+    
+    sliderFrame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local pos = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
+            local value = math.floor(min + (max - min) * pos)
+            sliderFill.Size = UDim2.new(pos, 0, 1, 0)
+            label.Text = text .. ": " .. value
+            callback(value)
+        end
+    end)
+    
+    return container
+end
+
+-- Criar toggle
+local function CreateToggle(parent, text, default, callback)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -10, 0, 45)
+    container.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    container.BorderSizePixel = 0
+    container.Parent = parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = container
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -70, 1, 0)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = container
+    
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(0, 50, 0, 30)
+    toggleButton.Position = UDim2.new(1, -60, 0.5, -15)
+    toggleButton.BackgroundColor3 = default and Color3.fromRGB(50, 200, 50) or Color3.fromRGB(200, 50, 50)
+    toggleButton.BorderSizePixel = 0
+    toggleButton.Text = default and "ON" or "OFF"
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.TextSize = 12
+    toggleButton.Font = Enum.Font.GothamBold
+    toggleButton.Parent = container
+    
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 6)
+    toggleCorner.Parent = toggleButton
+    
+    local enabled = default
+    
+    toggleButton.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        toggleButton.BackgroundColor3 = enabled and Color3.fromRGB(50, 200, 50) or Color3.fromRGB(200, 50, 50)
+        toggleButton.Text = enabled and "ON" or "OFF"
+        callback(enabled)
+    end)
+    
+    return container
+end
+
+-- Criar abas
+local mainTab = CreateTab("Main", "🏠")
+local playerTab = CreateTab("Player", "👤")
+local espTab = CreateTab("ESP", "👁️")
+local configTab = CreateTab("Config", "⚙️")
+
+-- Layout das abas
+local tabLayout = Instance.new("UIListLayout")
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0, 5)
+tabLayout.Parent = TabContainer
+
+-- Conteúdo Main Tab
+CreateButton(mainTab, "🚪 KITAR", Color3.fromRGB(255, 50, 50), function()
+    LocalPlayer:Kick("Você foi kitado do jogo! 🎀")
+end)
+
+-- Conteúdo Player Tab
+CreateSlider(playerTab, "⚡ Velocidade", 16, 200, Settings.Speed, function(value)
+    Settings.Speed = value
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end
+end)
+
+CreateToggle(playerTab, "🦘 Infinite Jump", Settings.InfinityJump, function(enabled)
+    Settings.InfinityJump = enabled
+    if enabled then
+        CreateNotification("Infinite Jump ativado!", 2)
+    else
+        CreateNotification("Infinite Jump desativado!", 2)
+    end
+end)
+
+CreateToggle(playerTab, "💤 Anti-AFK", Settings.AntiAFK, function(enabled)
+    Settings.AntiAFK = enabled
+    if enabled then
+        CreateNotification("Anti-AFK ativado!", 2)
+    else
+        CreateNotification("Anti-AFK desativado!", 2)
+    end
+end)
+
+-- Conteúdo ESP Tab
+local espToggle = CreateToggle(espTab, "👁️ ESP Ativado", Settings.ESPEnabled, function(enabled)
+    Settings.ESPEnabled = enabled
+    if enabled then
+        EnableESP()
+        CreateNotification("ESP ativado!", 2)
+    else
+        DisableESP()
+        CreateNotification("ESP desativado!", 2)
+    end
+end)
+
+CreateToggle(espTab, "📏 Mostrar Distância", Settings.ESPDistance, function(enabled)
+    Settings.ESPDistance = enabled
+    if Settings.ESPEnabled then
+        DisableESP()
+        EnableESP()
+    end
+end)
+
+CreateToggle(espTab, "❤️ Mostrar Vida", Settings.ESPHealth, function(enabled)
+    Settings.ESPHealth = enabled
+    if Settings.ESPEnabled then
+        DisableESP()
+        EnableESP()
+    end
+end)
+
+CreateToggle(espTab, "📍 Tracers", Settings.ESPTracers, function(enabled)
+    Settings.ESPTracers = enabled
+    if Settings.ESPEnabled then
+        DisableESP()
+        EnableESP()
+    end
+end)
+
+-- Conteúdo Config Tab
+CreateButton(configTab, "💾 Salvar Configurações", Color3.fromRGB(50, 150, 255), function()
+    CreateNotification("Configurações salvas com sucesso! 💾", 2)
+end)
+
+CreateButton(configTab, "🔄 Resetar Configurações", Color3.fromRGB(255, 150, 50), function()
+    Settings = {
+        Speed = 16,
+        InfinityJump = false,
+        ESPEnabled = false,
+        ESPDistance = true,
+        ESPHealth = true,
+        ESPTracers = false,
+        AntiAFK = false
+    }
+    CreateNotification("Configurações resetadas! 🔄", 2)
+end)
+
+-- Ativar primeira aba
+tabs["Main"].button.BackgroundColor3 = Color3.fromRGB(255, 100, 150)
+tabs["Main"].button.TextColor3 = Color3.fromRGB(255, 255, 255)
+tabs["Main"].content.Visible = true
+
 -- Sistema ESP
-local ESPEnabled = false
 local ESPObjects = {}
 
 local function CreateESP(player)
@@ -104,51 +439,114 @@ local function CreateESP(player)
     
     local character = player.Character
     local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChild("Humanoid")
     
     if not humanoidRootPart then return end
     
-    -- Criar highlight
+    local espObjects = {}
+    
+    -- Highlight
     local highlight = Instance.new("Highlight")
     highlight.Name = "KitiESP"
     highlight.Adornee = character
-    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+    highlight.FillColor = Color3.fromRGB(255, 100, 150)
     highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
     highlight.FillTransparency = 0.5
     highlight.OutlineTransparency = 0
     highlight.Parent = character
+    table.insert(espObjects, highlight)
     
-    -- Criar BillboardGui com nome
+    -- BillboardGui
     local billboard = Instance.new("BillboardGui")
     billboard.Name = "KitiESPName"
     billboard.Adornee = humanoidRootPart
-    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.Size = UDim2.new(0, 200, 0, 100)
     billboard.StudsOffset = Vector3.new(0, 3, 0)
     billboard.AlwaysOnTop = true
     billboard.Parent = character
+    table.insert(espObjects, billboard)
     
     local nameLabel = Instance.new("TextLabel")
-    nameLabel.Size = UDim2.new(1, 0, 1, 0)
+    nameLabel.Size = UDim2.new(1, 0, 0, 25)
     nameLabel.BackgroundTransparency = 1
     nameLabel.Text = player.Name
     nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.TextSize = 18
+    nameLabel.TextSize = 16
     nameLabel.Font = Enum.Font.GothamBold
     nameLabel.TextStrokeTransparency = 0
     nameLabel.Parent = billboard
     
-    ESPObjects[player] = {highlight, billboard}
+    local infoLabel = Instance.new("TextLabel")
+    infoLabel.Size = UDim2.new(1, 0, 0, 25)
+    infoLabel.Position = UDim2.new(0, 0, 0, 25)
+    infoLabel.BackgroundTransparency = 1
+    infoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    infoLabel.TextSize = 14
+    infoLabel.Font = Enum.Font.Gotham
+    infoLabel.TextStrokeTransparency = 0
+    infoLabel.Parent = billboard
+    
+    -- Tracers
+    if Settings.ESPTracers then
+        local tracer = Instance.new("Line")
+        tracer.Name = "KitiTracer"
+        tracer.Thickness = 2
+        tracer.Color = Color3.fromRGB(255, 100, 150)
+        tracer.Transparency = 0.5
+        tracer.Parent = workspace.CurrentCamera
+        table.insert(espObjects, tracer)
+    end
+    
+    -- Update loop
+    local updateConnection
+    updateConnection = RunService.RenderStepped:Connect(function()
+        if not character or not character.Parent or not humanoidRootPart.Parent then
+            updateConnection:Disconnect()
+            RemoveESP(player)
+            return
+        end
+        
+        local info = ""
+        
+        if Settings.ESPHealth and humanoid then
+            local healthPercent = math.floor((humanoid.Health / humanoid.MaxHealth) * 100)
+            info = info .. "❤️ " .. healthPercent .. "%"
+        end
+        
+        if Settings.ESPDistance then
+            local distance = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude)
+            if info ~= "" then info = info .. " | " end
+            info = info .. "📏 " .. distance .. "m"
+        end
+        
+        infoLabel.Text = info
+        
+        -- Update tracer
+        if Settings.ESPTracers and espObjects[3] then
+            local tracer = espObjects[3]
+            tracer.From = workspace.CurrentCamera.CFrame.Position
+            tracer.To = humanoidRootPart.Position
+        end
+    end)
+    table.insert(espObjects, updateConnection)
+    
+    ESPObjects[player] = espObjects
 end
 
 local function RemoveESP(player)
     if ESPObjects[player] then
         for _, obj in pairs(ESPObjects[player]) do
-            if obj then obj:Destroy() end
+            if typeof(obj) == "Instance" then
+                obj:Destroy()
+            elseif typeof(obj) == "RBXScriptConnection" then
+                obj:Disconnect()
+            end
         end
         ESPObjects[player] = nil
     end
 end
 
-local function EnableESP()
+function EnableESP()
     for _, player in pairs(Players:GetPlayers()) do
         if player.Character then
             CreateESP(player)
@@ -156,30 +554,70 @@ local function EnableESP()
     end
 end
 
-local function DisableESP()
+function DisableESP()
     for player, _ in pairs(ESPObjects) do
         RemoveESP(player)
     end
 end
 
--- Função Kitar
-KitarButton.MouseButton1Click:Connect(function()
-    LocalPlayer:Kick("Você foi kitado do jogo!")
+-- Sistemas
+local function ApplySpeed()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.WalkSpeed = Settings.Speed
+    end
+end
+
+-- Infinite Jump
+UserInputService.JumpRequest:Connect(function()
+    if Settings.InfinityJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
 end)
 
--- Função ESP Toggle
-ESPButton.MouseButton1Click:Connect(function()
-    ESPEnabled = not ESPEnabled
-    
-    if ESPEnabled then
-        ESPButton.Text = "ESP: ON"
-        ESPButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
-        EnableESP()
+-- Anti-AFK
+local antiAFKConnection
+local function ToggleAntiAFK()
+    if Settings.AntiAFK then
+        antiAFKConnection = RunService.Heartbeat:Connect(function()
+            local VirtualUser = game:GetService("VirtualUser")
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+        end)
     else
-        ESPButton.Text = "ESP: OFF"
-        ESPButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
-        DisableESP()
+        if antiAFKConnection then
+            antiAFKConnection:Disconnect()
+        end
     end
+end
+
+-- Aplicar velocidade ao spawn
+LocalPlayer.CharacterAdded:Connect(function(character)
+    character:WaitForChild("Humanoid")
+    task.wait(0.1)
+    ApplySpeed()
+end)
+
+-- ESP ao spawn
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        task.wait(0.5)
+        if Settings.ESPEnabled then
+            CreateESP(player)
+        end
+    end)
+end)
+
+for _, player in pairs(Players:GetPlayers()) do
+    player.CharacterAdded:Connect(function()
+        task.wait(0.5)
+        if Settings.ESPEnabled then
+            CreateESP(player)
+        end
+    end)
+end
+
+Players.PlayerRemoving:Connect(function(player)
+    RemoveESP(player)
 end)
 
 -- Botão minimizar (logo)
@@ -189,7 +627,7 @@ LogoButton.Size = UDim2.new(0, 80, 0, 80)
 LogoButton.Position = UDim2.new(0, 10, 1, -90)
 LogoButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 LogoButton.BorderSizePixel = 0
-LogoButton.Image = "rbxassetid://118243666553594" -- Substitua pela ID da sua imagem
+LogoButton.Image = "rbxassetid://YOUR_IMAGE_ID" -- Substitua pela ID da sua imagem
 LogoButton.ScaleType = Enum.ScaleType.Fit
 LogoButton.Visible = false
 LogoButton.Parent = ScreenGui
@@ -204,39 +642,17 @@ local function ToggleGUI()
     LogoButton.Visible = not LogoButton.Visible
 end
 
--- Botão X agora minimiza
 CloseButton.MouseButton1Click:Connect(function()
     ToggleGUI()
 end)
 
--- Clicar na logo abre a GUI novamente
 LogoButton.MouseButton1Click:Connect(function()
     ToggleGUI()
 end)
 
--- Atualizar ESP quando novos jogadores entrarem
-Players.PlayerAdded:Connect(function(player)
-    if ESPEnabled then
-        player.CharacterAdded:Connect(function()
-            wait(0.5)
-            CreateESP(player)
-        end)
-    end
-end)
+-- Inicialização
+CreateNotification("🎀 Kiti-Hub carregado com sucesso!", 3)
+ApplySpeed()
+ToggleAntiAFK()
 
--- Atualizar ESP quando personagens spawnam
-for _, player in pairs(Players:GetPlayers()) do
-    player.CharacterAdded:Connect(function()
-        if ESPEnabled then
-            wait(0.5)
-            CreateESP(player)
-        end
-    end)
-end
-
--- Remover ESP quando jogadores saem
-Players.PlayerRemoving:Connect(function(player)
-    RemoveESP(player)
-end)
-
-print("Kiti-Hub Privado carregado com sucesso!")
+print("Kiti-Hub Privado v2.0 carregado!")
