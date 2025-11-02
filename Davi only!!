@@ -1,5 +1,5 @@
--- Kiti-Hub Privado for Davi v2.0
--- Script GUI Local para Roblox
+-- Kiti-Hub Privado for Davi v3.0
+-- Script GUI Local para Roblox - Universal
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -15,8 +15,7 @@ local Settings = {
     ESPDistance = true,
     ESPHealth = true,
     ESPTracers = false,
-    AntiAFK = false,
-    Theme = "Dark"
+    AntiAFK = false
 }
 
 -- Criar a GUI principal
@@ -28,8 +27,8 @@ ScreenGui.ResetOnSpawn = false
 -- Criar notificação
 local function CreateNotification(text, duration)
     local notif = Instance.new("Frame")
-    notif.Size = UDim2.new(0, 300, 0, 60)
-    notif.Position = UDim2.new(1, -320, 0, 20)
+    notif.Size = UDim2.new(0, 280, 0, 55)
+    notif.Position = UDim2.new(1, -300, 0, 20)
     notif.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     notif.BorderSizePixel = 0
     notif.Parent = ScreenGui
@@ -44,12 +43,12 @@ local function CreateNotification(text, duration)
     label.BackgroundTransparency = 1
     label.Text = text
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 16
+    label.TextSize = 14
     label.Font = Enum.Font.Gotham
     label.TextWrapped = true
     label.Parent = notif
     
-    notif:TweenPosition(UDim2.new(1, -320, 0, 20), "Out", "Quad", 0.5, true)
+    notif:TweenPosition(UDim2.new(1, -300, 0, 20), "Out", "Quad", 0.5, true)
     
     task.wait(duration or 3)
     notif:TweenPosition(UDim2.new(1, 20, 0, 20), "In", "Quad", 0.5, true)
@@ -57,11 +56,11 @@ local function CreateNotification(text, duration)
     notif:Destroy()
 end
 
--- Frame principal
+-- Frame principal (MENOR)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 500, 0, 400)
-MainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
+MainFrame.Size = UDim2.new(0, 420, 0, 350)
+MainFrame.Position = UDim2.new(0.5, -210, 0.5, -175)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -75,12 +74,12 @@ MainCorner.Parent = MainFrame
 -- Título
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
-Title.Size = UDim2.new(1, 0, 0, 50)
+Title.Size = UDim2.new(1, 0, 0, 45)
 Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 Title.BorderSizePixel = 0
-Title.Text = "🎀 Kiti-Hub Privado for Davi v2.0"
+Title.Text = "🎀 Kiti-Hub Privado for Davi"
 Title.TextColor3 = Color3.fromRGB(255, 100, 150)
-Title.TextSize = 20
+Title.TextSize = 18
 Title.Font = Enum.Font.GothamBold
 Title.Parent = MainFrame
 
@@ -91,13 +90,13 @@ TitleCorner.Parent = Title
 -- Botão Fechar/Minimizar
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
-CloseButton.Size = UDim2.new(0, 35, 0, 35)
-CloseButton.Position = UDim2.new(1, -42, 0, 7.5)
+CloseButton.Size = UDim2.new(0, 32, 0, 32)
+CloseButton.Position = UDim2.new(1, -39, 0, 6.5)
 CloseButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
 CloseButton.BorderSizePixel = 0
 CloseButton.Text = "−"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.TextSize = 22
+CloseButton.TextSize = 20
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.Parent = MainFrame
 
@@ -108,16 +107,16 @@ CloseCorner.Parent = CloseButton
 -- Container de abas
 local TabContainer = Instance.new("Frame")
 TabContainer.Name = "TabContainer"
-TabContainer.Size = UDim2.new(1, -20, 0, 40)
-TabContainer.Position = UDim2.new(0, 10, 0, 60)
+TabContainer.Size = UDim2.new(1, -20, 0, 35)
+TabContainer.Position = UDim2.new(0, 10, 0, 55)
 TabContainer.BackgroundTransparency = 1
 TabContainer.Parent = MainFrame
 
 -- Content Frame
 local ContentFrame = Instance.new("Frame")
 ContentFrame.Name = "ContentFrame"
-ContentFrame.Size = UDim2.new(1, -20, 1, -120)
-ContentFrame.Position = UDim2.new(0, 10, 0, 110)
+ContentFrame.Size = UDim2.new(1, -20, 1, -110)
+ContentFrame.Position = UDim2.new(0, 10, 0, 100)
 ContentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 ContentFrame.BorderSizePixel = 0
 ContentFrame.Parent = MainFrame
@@ -133,12 +132,12 @@ local tabs = {}
 local function CreateTab(name, icon)
     local tabButton = Instance.new("TextButton")
     tabButton.Name = name .. "Tab"
-    tabButton.Size = UDim2.new(0, 150, 1, 0)
+    tabButton.Size = UDim2.new(0, 95, 1, 0)
     tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabButton.BorderSizePixel = 0
     tabButton.Text = icon .. " " .. name
     tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-    tabButton.TextSize = 16
+    tabButton.TextSize = 14
     tabButton.Font = Enum.Font.GothamBold
     tabButton.Parent = TabContainer
     
@@ -154,11 +153,16 @@ local function CreateTab(name, icon)
     tabContent.BorderSizePixel = 0
     tabContent.ScrollBarThickness = 4
     tabContent.Visible = false
+    tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
     tabContent.Parent = ContentFrame
     
     local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 10)
+    layout.Padding = UDim.new(0, 8)
     layout.Parent = tabContent
+    
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        tabContent.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+    end)
     
     tabs[name] = {button = tabButton, content = tabContent}
     
@@ -180,12 +184,12 @@ end
 -- Criar função de botão genérico
 local function CreateButton(parent, text, color, callback)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -10, 0, 45)
+    button.Size = UDim2.new(1, -10, 0, 40)
     button.BackgroundColor3 = color
     button.BorderSizePixel = 0
     button.Text = text
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextSize = 16
+    button.TextSize = 15
     button.Font = Enum.Font.GothamBold
     button.Parent = parent
     
@@ -193,13 +197,12 @@ local function CreateButton(parent, text, color, callback)
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = button
     
-    -- Animação de hover
     button.MouseEnter:Connect(function()
-        button:TweenSize(UDim2.new(1, -5, 0, 48), "Out", "Quad", 0.2, true)
+        button:TweenSize(UDim2.new(1, -5, 0, 43), "Out", "Quad", 0.2, true)
     end)
     
     button.MouseLeave:Connect(function()
-        button:TweenSize(UDim2.new(1, -10, 0, 45), "Out", "Quad", 0.2, true)
+        button:TweenSize(UDim2.new(1, -10, 0, 40), "Out", "Quad", 0.2, true)
     end)
     
     button.MouseButton1Click:Connect(callback)
@@ -210,7 +213,7 @@ end
 -- Criar slider
 local function CreateSlider(parent, text, min, max, default, callback)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -10, 0, 70)
+    container.Size = UDim2.new(1, -10, 0, 60)
     container.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     container.BorderSizePixel = 0
     container.Parent = parent
@@ -220,19 +223,19 @@ local function CreateSlider(parent, text, min, max, default, callback)
     corner.Parent = container
     
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -20, 0, 25)
-    label.Position = UDim2.new(0, 10, 0, 5)
+    label.Size = UDim2.new(1, -20, 0, 22)
+    label.Position = UDim2.new(0, 10, 0, 4)
     label.BackgroundTransparency = 1
     label.Text = text .. ": " .. default
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
+    label.TextSize = 13
     label.Font = Enum.Font.Gotham
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = container
     
     local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, -20, 0, 25)
-    sliderFrame.Position = UDim2.new(0, 10, 0, 35)
+    sliderFrame.Size = UDim2.new(1, -20, 0, 22)
+    sliderFrame.Position = UDim2.new(0, 10, 0, 30)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = container
@@ -281,7 +284,7 @@ end
 -- Criar toggle
 local function CreateToggle(parent, text, default, callback)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -10, 0, 45)
+    container.Size = UDim2.new(1, -10, 0, 40)
     container.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     container.BorderSizePixel = 0
     container.Parent = parent
@@ -291,24 +294,24 @@ local function CreateToggle(parent, text, default, callback)
     corner.Parent = container
     
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -70, 1, 0)
+    label.Size = UDim2.new(1, -65, 1, 0)
     label.Position = UDim2.new(0, 10, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = text
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
+    label.TextSize = 13
     label.Font = Enum.Font.Gotham
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = container
     
     local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0, 50, 0, 30)
-    toggleButton.Position = UDim2.new(1, -60, 0.5, -15)
+    toggleButton.Size = UDim2.new(0, 45, 0, 26)
+    toggleButton.Position = UDim2.new(1, -52, 0.5, -13)
     toggleButton.BackgroundColor3 = default and Color3.fromRGB(50, 200, 50) or Color3.fromRGB(200, 50, 50)
     toggleButton.BorderSizePixel = 0
     toggleButton.Text = default and "ON" or "OFF"
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.TextSize = 12
+    toggleButton.TextSize = 11
     toggleButton.Font = Enum.Font.GothamBold
     toggleButton.Parent = container
     
@@ -364,6 +367,7 @@ end)
 
 CreateToggle(playerTab, "💤 Anti-AFK", Settings.AntiAFK, function(enabled)
     Settings.AntiAFK = enabled
+    ToggleAntiAFK()
     if enabled then
         CreateNotification("Anti-AFK ativado!", 2)
     else
@@ -372,7 +376,7 @@ CreateToggle(playerTab, "💤 Anti-AFK", Settings.AntiAFK, function(enabled)
 end)
 
 -- Conteúdo ESP Tab
-local espToggle = CreateToggle(espTab, "👁️ ESP Ativado", Settings.ESPEnabled, function(enabled)
+CreateToggle(espTab, "👁️ ESP Ativado", Settings.ESPEnabled, function(enabled)
     Settings.ESPEnabled = enabled
     if enabled then
         EnableESP()
@@ -409,7 +413,7 @@ end)
 
 -- Conteúdo Config Tab
 CreateButton(configTab, "💾 Salvar Configurações", Color3.fromRGB(50, 150, 255), function()
-    CreateNotification("Configurações salvas com sucesso! 💾", 2)
+    CreateNotification("Configurações salvas! 💾", 2)
 end)
 
 CreateButton(configTab, "🔄 Resetar Configurações", Color3.fromRGB(255, 150, 50), function()
@@ -445,7 +449,6 @@ local function CreateESP(player)
     
     local espObjects = {}
     
-    -- Highlight
     local highlight = Instance.new("Highlight")
     highlight.Name = "KitiESP"
     highlight.Adornee = character
@@ -456,7 +459,6 @@ local function CreateESP(player)
     highlight.Parent = character
     table.insert(espObjects, highlight)
     
-    -- BillboardGui
     local billboard = Instance.new("BillboardGui")
     billboard.Name = "KitiESPName"
     billboard.Adornee = humanoidRootPart
@@ -486,18 +488,25 @@ local function CreateESP(player)
     infoLabel.TextStrokeTransparency = 0
     infoLabel.Parent = billboard
     
-    -- Tracers
     if Settings.ESPTracers then
-        local tracer = Instance.new("Line")
-        tracer.Name = "KitiTracer"
-        tracer.Thickness = 2
-        tracer.Color = Color3.fromRGB(255, 100, 150)
-        tracer.Transparency = 0.5
-        tracer.Parent = workspace.CurrentCamera
-        table.insert(espObjects, tracer)
+        local attachment0 = Instance.new("Attachment", workspace.CurrentCamera)
+        local attachment1 = Instance.new("Attachment", humanoidRootPart)
+        
+        local beam = Instance.new("Beam")
+        beam.Name = "KitiTracer"
+        beam.Attachment0 = attachment0
+        beam.Attachment1 = attachment1
+        beam.Width0 = 0.1
+        beam.Width1 = 0.1
+        beam.Color = ColorSequence.new(Color3.fromRGB(255, 100, 150))
+        beam.FaceCamera = true
+        beam.Parent = workspace.CurrentCamera
+        
+        table.insert(espObjects, attachment0)
+        table.insert(espObjects, attachment1)
+        table.insert(espObjects, beam)
     end
     
-    -- Update loop
     local updateConnection
     updateConnection = RunService.RenderStepped:Connect(function()
         if not character or not character.Parent or not humanoidRootPart.Parent then
@@ -513,20 +522,13 @@ local function CreateESP(player)
             info = info .. "❤️ " .. healthPercent .. "%"
         end
         
-        if Settings.ESPDistance then
+        if Settings.ESPDistance and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local distance = math.floor((LocalPlayer.Character.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude)
             if info ~= "" then info = info .. " | " end
             info = info .. "📏 " .. distance .. "m"
         end
         
         infoLabel.Text = info
-        
-        -- Update tracer
-        if Settings.ESPTracers and espObjects[3] then
-            local tracer = espObjects[3]
-            tracer.From = workspace.CurrentCamera.CFrame.Position
-            tracer.To = humanoidRootPart.Position
-        end
     end)
     table.insert(espObjects, updateConnection)
     
@@ -576,7 +578,7 @@ end)
 
 -- Anti-AFK
 local antiAFKConnection
-local function ToggleAntiAFK()
+function ToggleAntiAFK()
     if Settings.AntiAFK then
         antiAFKConnection = RunService.Heartbeat:Connect(function()
             local VirtualUser = game:GetService("VirtualUser")
@@ -620,21 +622,30 @@ Players.PlayerRemoving:Connect(function(player)
     RemoveESP(player)
 end)
 
--- Botão minimizar (logo)
+-- Botão minimizar (logo) - AGORA MÓVEL E ARRASTÁVEL
 local LogoButton = Instance.new("ImageButton")
 LogoButton.Name = "LogoButton"
-LogoButton.Size = UDim2.new(0, 80, 0, 80)
-LogoButton.Position = UDim2.new(0, 10, 1, -90)
+LogoButton.Size = UDim2.new(0, 70, 0, 70)
+LogoButton.Position = UDim2.new(0, 10, 1, -80)
 LogoButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-LogoButton.BorderSizePixel = 0
-LogoButton.Image = "rbxassetid://YOUR_IMAGE_ID" -- Substitua pela ID da sua imagem
+LogoButton.BorderSizePixel = 2
+LogoButton.BorderColor3 = Color3.fromRGB(255, 100, 150)
+LogoButton.Image = "rbxassetid://118243666553594" -- Substitua pela ID da sua imagem
 LogoButton.ScaleType = Enum.ScaleType.Fit
 LogoButton.Visible = false
+LogoButton.Active = true
+LogoButton.Draggable = true -- LOGO ARRASTÁVEL!
 LogoButton.Parent = ScreenGui
 
 local LogoCorner = Instance.new("UICorner")
-LogoCorner.CornerRadius = UDim.new(0, 40)
+LogoCorner.CornerRadius = UDim.new(0, 35)
 LogoCorner.Parent = LogoButton
+
+-- Efeito de brilho no logo
+local LogoStroke = Instance.new("UIStroke")
+LogoStroke.Color = Color3.fromRGB(255, 100, 150)
+LogoStroke.Thickness = 2
+LogoStroke.Parent = LogoButton
 
 -- Função para minimizar/maximizar
 local function ToggleGUI()
@@ -650,9 +661,24 @@ LogoButton.MouseButton1Click:Connect(function()
     ToggleGUI()
 end)
 
+-- Animação do logo
+local logoAnimating = false
+spawn(function()
+    while true do
+        if LogoButton.Visible and not logoAnimating then
+            LogoButton:TweenSize(UDim2.new(0, 75, 0, 75), "Out", "Quad", 0.5, true)
+            task.wait(0.5)
+            LogoButton:TweenSize(UDim2.new(0, 70, 0, 70), "Out", "Quad", 0.5, true)
+            task.wait(0.5)
+        else
+            task.wait(0.1)
+        end
+    end
+end)
+
 -- Inicialização
-CreateNotification("🎀 Kiti-Hub carregado com sucesso!", 3)
+CreateNotification("🎀 Kiti-Hub carregado!", 3)
 ApplySpeed()
 ToggleAntiAFK()
 
-print("Kiti-Hub Privado v2.0 carregado!")
+print("Kiti-Hub Privado v3.0 carregado com sucesso!")
